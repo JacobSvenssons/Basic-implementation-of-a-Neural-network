@@ -1,0 +1,36 @@
+How to test and validate your solution to the ANN assignment
+
+There are two sets of image/label files in this archive:
+
+training-images.txt           contains 1000 images with the digits 4, 7, 8, 9
+training-labels.txt           contains the corresponding label values
+
+validation-images.txt         contains 1000 images for validation
+validation-labels.txt         contains the corresponing label values
+
+
+--- Running the program ---
+Run your program in the following way Note that the program you hand in must work on itchy.
+Please also note that the file names may change - you must read them from the command line and then open the files.
+
+-- Java example:--
+java -cp . Numbers training-images.txt training-labels.txt validation-images.txt > result.txt
+
+-- Python example: --
+python3 numbers.py training-images.txt training-labels.txt validation-images.txt > result.txt
+
+
+The symbol '>' before results.txt means that all output from your program is redirected to a file, in this case result.txt.
+It is thus very important that your program only prints the resulting labels and nothing else (no debug output or similar).
+
+--- Validation ---
+To validate your solution, run the 'grading' program, which compare your results against the labels:
+java -cp . MnistTest result.txt validation-labels.txt
+
+or for Python:
+python3 mnisttest.py result.txt validation-labels.txt
+
+
+The program will output the percentage of correct classifications.
+
+The source code for MnistTest.java and mnisttest.py is supplied should you want to look at it.
