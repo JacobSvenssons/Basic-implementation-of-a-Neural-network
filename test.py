@@ -1,6 +1,6 @@
-from testa.py import *
-import sys
+from testa import *
+
 
 if __name__ == "__main__":
-    temp = et
-    print(sys.path)
+    temp = printStuff()
+
