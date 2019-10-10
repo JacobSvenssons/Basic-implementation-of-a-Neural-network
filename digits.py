@@ -14,6 +14,7 @@ images, rows, cols, digits = map(int, file.readline().split())
 img = []
 for i in range(images):
     line = list(map(int, file.readline().split()))
+    line = np.array(list(map(0.001.__mul__, line)))
     img.append(line)
 img = np.array(img)
 
