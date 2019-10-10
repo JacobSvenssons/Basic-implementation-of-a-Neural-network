@@ -1,7 +1,9 @@
 import numpy as np
 from random import random
+import sys
 
-file = open("givenData/training-images.txt", "r")
+
+file = open(sys.argv[1], "r")  # insert  training-images.txt
 # Read the first two lines cause we do not need them.
 file.readline()
 file.readline()
@@ -18,3 +20,5 @@ img = np.array(img)
 # TODO: From where will the "input" come from?
 weights = [0.1 * random() - 0.05 for x in range(int(input()))]
 weights = np.array(weights)
+
+print(img[2][150])
