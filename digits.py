@@ -3,6 +3,22 @@ from random import random
 import sys
 
 
+# A FUNCTION FOR SPLITTING A LIST, CURRENTLY ONLY IN HALF
+# WILL UPDATE SO YOU CAN SPLIT IN A DESIRED WAY
+def list_splitter(list_to_split):
+    half = len(list_to_split) // 2
+    return list_to_split[:half], list_to_split[half:]
+
+
+# A FUNCTION FOR SHUFFLING THE OBJECTS IN TWO LISTS THE SAME WAY.
+# AKA CORRECT LABEL FOR THE IMAGE
+def list_shuffler(image_list_to_shuffle, label_to_shuffle):
+    temp_zip = list(zip(image_list_to_shuffle, label_to_shuffle))
+    np.random.shuffle(temp_zip)
+    shuffled_image_list, shuffled_label_list = zip(*temp_zip)
+    return shuffled_image_list, shuffled_label_list
+
+
 class ReadFile:
     def __init__(self, file):
         self.file = open(file, "r")  # insert  training-images.txt
@@ -36,14 +52,37 @@ class ReadFile:
 
         return label
 
+
 # Vill vi eventuellt lagra labels och images i samma struktur med en kry/value?
 if __name__ == "__main__":
 
     all_images = ReadFile(sys.argv[1])
-    temp = all_images.read_images()
+    np_all_images = all_images.read_images()
 
     all_label = ReadFile(sys.argv[2])
-    temp2 = all_label.read_label()
+    np_all_labels = all_label.read_label()
+
+    # take the two lists and split them in training and test images,
+    # and lastly shuffle the lists.
+    training_images, test_images = list_splitter(np_all_images)
+    training_labels, test_labels = list_splitter(np_all_labels)
+    shuffled_training_images, shuffled_training_labels = list_shuffler(training_images, training_labels)
+    shuffled_test_images, shuffled_test_labels = list_shuffler(test_images, test_labels)
+
+    ### A list if you want to test the function list_splitter ###
+
+    #list1 = ['A', 'B', 'C', 'D', 'E', 'F']
+    #a, b = list_splitter(list1)
+    #print(a)
+    #print(b)
+
+    ### TWO lists if you want to test the function list_shuffler ###
+
+    #list1 = ['A', 'B', 'C', 'D', 'E', 'F']
+    #list2 = [1, 2, 3, 4, 5, 6]
+    #a, b = list_shuffler(list1, list2)
+    #print(a)
+    #print(b)
 
     # Dela listorna i två delar, training och test, rekommenderat training = 75 / test = 25 som start.
     # Måste hålla koll så att labels och images är i samma ordning. Tar vi plats 10 i en lista
