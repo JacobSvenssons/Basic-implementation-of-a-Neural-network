@@ -1,19 +1,20 @@
 import numpy as np
+from random import random
 
 file = open("givenData/training-images.txt", "r")
 # Read the first two lines cause we do not need them.
 file.readline()
 file.readline()
-#läs in tredje raden för att hämta värderna
+# read third row and fetch the given values
 images, rows, cols, digits = map(int, file.readline().split())
 
+# Read the file and store every row (image) as an array inside an array
 img = []
-
-# Läser filen och lagrar varje rad in en array som lagras i en annan array
 for i in range(images):
     line = list(map(int, file.readline().split()))
     img.append(line)
-print(img[2][150])
+img = np.array(img)
 
-#weights = np.array()
-
+# TODO: From where will the "input" come from?
+weights = [0.1 * random() - 0.05 for x in range(int(input()))]
+weights = np.array(weights)
