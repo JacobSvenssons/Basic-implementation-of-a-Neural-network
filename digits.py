@@ -39,10 +39,13 @@ class ReadFile:
 
 if __name__ == "__main__":
 
-    label = ReadFile(sys.argv[1])
-    temp = label.read_label()
+    training = ReadFile(sys.argv[1])
+    temp = training.read_images()
+    print(temp[1])
 
-    print(temp[3])
+    label = ReadFile(sys.argv[2])
+    temp2 = label.read_label()
+    print(temp2[0])
 
 # TODO: From where will the "input" come from?
 #weights = [0.1 * random() - 0.05 for x in range(images)]
