@@ -5,6 +5,9 @@ import sys
 
 # A FUNCTION FOR SPLITTING A LIST, CURRENTLY ONLY IN HALF
 # WILL UPDATE SO YOU CAN SPLIT IN A DESIRED WAY
+
+# FRÅGA HANDLEDARE OM MAN MÅSTE SPLITTA LISTAN MER "RANDOM"? MEN EFTERSOM VI HAR 4 OLIKA SIFFROR SÅ KÄNNS DET
+# SPONTANT SOM ATT DET RÄCKER ATT GÖRA SÅ HÄR??
 def list_splitter(list_to_split):
     half = len(list_to_split) // 2
     return list_to_split[:half], list_to_split[half:]
@@ -53,7 +56,6 @@ class ReadFile:
         return label
 
 
-# Vill vi eventuellt lagra labels och images i samma struktur med en kry/value?
 if __name__ == "__main__":
 
     all_images = ReadFile(sys.argv[1])
