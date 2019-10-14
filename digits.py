@@ -3,14 +3,21 @@ from random import random
 import sys
 
 
-# A FUNCTION FOR SPLITTING A LIST, CURRENTLY ONLY IN HALF
-# WILL UPDATE SO YOU CAN SPLIT IN A DESIRED WAY
+# Generate a list with random weights. Size is the size of every picture
+# We want to create one for every network, so if we have 4,7,8 and 9 we need 4 lists with random weights.
+# They will update after every "run" with a picture in a network.
+def generate_weight_list(size):
+    weights = [0.1 * random() - 0.05 for x in range(size)]
+    weights = np.array(weights)
+    return weights
 
-# FRÅGA HANDLEDARE OM MAN MÅSTE SPLITTA LISTAN MER "RANDOM"? MEN EFTERSOM VI HAR 4 OLIKA SIFFROR SÅ KÄNNS DET
-# SPONTANT SOM ATT DET RÄCKER ATT GÖRA SÅ HÄR??
-def list_splitter(list_to_split):
-    half = len(list_to_split) // 2
-    return list_to_split[:half], list_to_split[half:]
+
+# A FUNCTION FOR SPLITTING A LIST IN A DESIRED WAY
+# RATIO IS A NUMBER 0-1 AND SETS THE "MID POINT" WHERE THE LIST SHOULD SPLIT
+def list_splitter(list_to_split, ratio):
+    elements = len(list_to_split)
+    middle = int(elements * ratio)
+    return [list_to_split[:middle], list_to_split[middle:]]
 
 
 # A FUNCTION FOR SHUFFLING THE OBJECTS IN TWO LISTS THE SAME WAY.
@@ -66,41 +73,34 @@ if __name__ == "__main__":
 
     # take the two lists and split them in training and test images,
     # and lastly shuffle the lists.
-    training_images, test_images = list_splitter(np_all_images)
-    training_labels, test_labels = list_splitter(np_all_labels)
+    training_images, test_images = list_splitter(np_all_images, 0.75)
+    training_labels, test_labels = list_splitter(np_all_labels, 0.75)
     shuffled_training_images, shuffled_training_labels = list_shuffler(training_images, training_labels)
     shuffled_test_images, shuffled_test_labels = list_shuffler(test_images, test_labels)
 
     ### A list if you want to test the function list_splitter ###
 
     #list1 = ['A', 'B', 'C', 'D', 'E', 'F']
-    #a, b = list_splitter(list1)
+    #a, b = list_splitter(list1, 0.75)
     #print(a)
     #print(b)
 
     ### TWO lists if you want to test the function list_shuffler ###
+    # create a list, split the list and labels, use shuffle function and print them both
+    # and see that they still match.
 
     #list1 = ['A', 'B', 'C', 'D', 'E', 'F']
     #list2 = [1, 2, 3, 4, 5, 6]
-    #a, b = list_shuffler(list1, list2)
+    #list1_training, list1_test = list_splitter(list1, 0.75)
+    #list2_training, list2_test = list_splitter(list2, 0.75)
+    #a, b = list_shuffler(list1_training, list2_training)
     #print(a)
     #print(b)
-
-    # Dela listorna i två delar, training och test, rekommenderat training = 75 / test = 25 som start.
-    # Måste hålla koll så att labels och images är i samma ordning. Tar vi plats 10 i en lista
-    # måste vi ävem göra det i andra så de har samma plats. Värderna måste shufflas runt,
-    # borde bli samma sak med att ta random objekt och flytta till nya listorna.
 
     # För training, skapa ny array som initaliseras med random weights mellan - 0.05 till 0.05. Blir lika stor
     # som trainigs storlek. Sedan vill vi skicka in en pixel och dess weight i en
     # "activation function" samt en label compare ( se om den är rätt eller inte)
     # för att träna och uppdatera med en ny weight.
-
-
-# TODO: From where will the "input" come from?
-#weights = [0.1 * random() - 0.05 for x in range(images)]
-#weights = np.array(weights)
-
 
 
 #for idx, pic in enumerate(img):
