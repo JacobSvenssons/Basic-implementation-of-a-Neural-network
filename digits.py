@@ -1,7 +1,26 @@
 import numpy as np
 from random import random
 import sys
-from perceptron import *
+
+
+class Network:
+    def __init__(self, label, size):
+        self.label = label
+        self.weights = np.array([0.1 * random() - 0.05 for _ in range(size)])
+
+    def calculate_error(self, label, a):
+        y = 1 if self.label == label else -1
+        return y - a
+
+    def calculate_new_weight(self, error, pixel, learning_rate, old_weight):
+        temp = learning_rate * error * pixel
+        return old_weight + temp
+
+    def activation_function(self, dot):
+        return 1 / (1 + np.exp(dot))
+
+    def dot_product(self, pixels):
+        return sum(np.dot(pixels, self.weights))
 
 
 # Generate a list with random weights. Size is the size of every picture
@@ -78,14 +97,35 @@ if __name__ == "__main__":
     training_labels, test_labels = list_splitter(np_all_labels, 0.75)
     shuffled_training_images, shuffled_training_labels = list_shuffler(training_images, training_labels)
     shuffled_test_images, shuffled_test_labels = list_shuffler(test_images, test_labels)
-    print(training_images[0][0])
-# Vi vill skapa en "perceptron" som ska "tränas" aka dennes weight lista uppdateras. En perceptron är ett objekt, men
+    # Vi vill skapa en "perceptron" som ska "tränas" aka dennes weight lista uppdateras. En perceptron är ett objekt, men
     # kan också bara vara en weight lista som uppdateras "tränas"
 
-    perceptron_4 = perceptron()
+    p_4 = Network(4, len(training_images[0]))
+    p_7 = Network(7, len(training_images[0]))
+    p_8 = Network(8, len(training_images[0]))
+    p_9 = Network(9, len(training_images[0]))
 
+    nets = [p_4, p_7, p_8, p_9]
 
+    i = 0
+    for image in shuffled_training_images:
+        j = 0
 
+        for pxl in image:
+
+            for net in nets:
+                if pxl == 0:
+                    continue
+                else:
+                    dot = net.dot_product(pxl)
+                    act = net.activation_function(dot)
+                    err = net.calculate_error(shuffled_training_labels[i], act)
+                    new_weight = net.calculate_new_weight(err, pxl, 0.5, net.weights[j])
+                    net.weights[j] = new_weight
+            j += 1
+
+        i += 1
+        print(i)
 
     #   ------- TEST CASES -------
     ### A list if you want to test the function list_splitter ###
