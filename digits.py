@@ -1,6 +1,7 @@
 import numpy as np
 from random import random
 import sys
+from perceptron import *
 
 
 # Generate a list with random weights. Size is the size of every picture
@@ -77,13 +78,12 @@ if __name__ == "__main__":
     training_labels, test_labels = list_splitter(np_all_labels, 0.75)
     shuffled_training_images, shuffled_training_labels = list_shuffler(training_images, training_labels)
     shuffled_test_images, shuffled_test_labels = list_shuffler(test_images, test_labels)
-
+    print(training_images[0][0])
 # Vi vill skapa en "perceptron" som ska "tränas" aka dennes weight lista uppdateras. En perceptron är ett objekt, men
     # kan också bara vara en weight lista som uppdateras "tränas"
-    perceptron_4 = generate_weight_list(len(shuffled_training_images))
-    perceptron_7 = generate_weight_list(len(shuffled_training_images))
-    perceptron_8 = generate_weight_list(len(shuffled_training_images))
-    perceptron_9 = generate_weight_list(len(shuffled_training_images))
+
+    perceptron_4 = perceptron()
+
 
 
 
