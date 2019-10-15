@@ -12,15 +12,15 @@ class Network:
         y = 1 if self.label == label else -1
         return y - a
 
-    def calculate_new_weight(self, error, pixel, learning_rate, old_weight):
-        temp = learning_rate * error * pixel
-        return old_weight + temp
+    def calculate_new_weight(self, error, img, learning_rate):
+        for i in range(len(self.weights)):
+            self.weights[i] = self.weights[i] + img[i] * error * learning_rate
 
     def activation_function(self, dot):
-        return 1 / (1 + np.exp(dot))
+        return np.tanh(dot)
 
     def dot_product(self, pixels):
-        return sum(np.dot(pixels, self.weights))
+        return np.dot(self.weights, pixels)
 
 
 # Generate a list with random weights. Size is the size of every picture
@@ -97,8 +97,6 @@ if __name__ == "__main__":
     training_labels, test_labels = list_splitter(np_all_labels, 0.75)
     shuffled_training_images, shuffled_training_labels = list_shuffler(training_images, training_labels)
     shuffled_test_images, shuffled_test_labels = list_shuffler(test_images, test_labels)
-    # Vi vill skapa en "perceptron" som ska "tränas" aka dennes weight lista uppdateras. En perceptron är ett objekt, men
-    # kan också bara vara en weight lista som uppdateras "tränas"
 
     p_4 = Network(4, len(training_images[0]))
     p_7 = Network(7, len(training_images[0]))
@@ -109,47 +107,17 @@ if __name__ == "__main__":
 
     i = 0
     for image in shuffled_training_images:
-        j = 0
 
-        for pxl in image:
-
-            for net in nets:
-                if pxl == 0:
-                    continue
-                else:
-                    dot = net.dot_product(pxl)
-                    act = net.activation_function(dot)
-                    err = net.calculate_error(shuffled_training_labels[i], act)
-                    new_weight = net.calculate_new_weight(err, pxl, 0.5, net.weights[j])
-                    net.weights[j] = new_weight
-            j += 1
-
+        for net in nets:
+            dot_p = net.dot_product(image)
+            act = net.activation_function(dot_p)
+            err = net.calculate_error(shuffled_training_labels[i], act)
+            net.calculate_new_weight(err, image, 0.01)
         i += 1
         print(i)
 
-    #   ------- TEST CASES -------
-    ### A list if you want to test the function list_splitter ###
+    nets_ans = [0, 0, 0, 0]
+    correct_ans = 0
 
-    #list1 = ['A', 'B', 'C', 'D', 'E', 'F']
-    #a, b = list_splitter(list1, 0.75)
-    #print(a)
-    #print(b)
-
-
-    ### TWO lists if you want to test the function list_shuffler ###
-    # create a list, split the list and labels, use shuffle function and print them both
-    # and see that they still match.
-
-    #list1 = ['A', 'B', 'C', 'D', 'E', 'F']
-    #list2 = [1, 2, 3, 4, 5, 6]
-    #list1_training, list1_test = list_splitter(list1, 0.75)
-    #list2_training, list2_test = list_splitter(list2, 0.75)
-    #a, b = list_shuffler(list1_training, list2_training)
-    #print(a)
-    #print(b)
-
-
-#for idx, pic in enumerate(img):
- #   print("Image:", idx + 1)
-  #  print(pic)
-
+    j = 0
+    for img in shuffled_test_images:
