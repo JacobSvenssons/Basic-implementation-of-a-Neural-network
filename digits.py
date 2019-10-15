@@ -78,12 +78,23 @@ if __name__ == "__main__":
     shuffled_training_images, shuffled_training_labels = list_shuffler(training_images, training_labels)
     shuffled_test_images, shuffled_test_labels = list_shuffler(test_images, test_labels)
 
+# Vi vill skapa en "perceptron" som ska "tränas" aka dennes weight lista uppdateras. En perceptron är ett objekt, men
+    # kan också bara vara en weight lista som uppdateras "tränas"
+    perceptron_4 = generate_weight_list(len(shuffled_training_images))
+    perceptron_7 = generate_weight_list(len(shuffled_training_images))
+    perceptron_8 = generate_weight_list(len(shuffled_training_images))
+    perceptron_9 = generate_weight_list(len(shuffled_training_images))
+
+
+
+    #   ------- TEST CASES -------
     ### A list if you want to test the function list_splitter ###
 
     #list1 = ['A', 'B', 'C', 'D', 'E', 'F']
     #a, b = list_splitter(list1, 0.75)
     #print(a)
     #print(b)
+
 
     ### TWO lists if you want to test the function list_shuffler ###
     # create a list, split the list and labels, use shuffle function and print them both
@@ -96,11 +107,6 @@ if __name__ == "__main__":
     #a, b = list_shuffler(list1_training, list2_training)
     #print(a)
     #print(b)
-
-    # För training, skapa ny array som initaliseras med random weights mellan - 0.05 till 0.05. Blir lika stor
-    # som trainigs storlek. Sedan vill vi skicka in en pixel och dess weight i en
-    # "activation function" samt en label compare ( se om den är rätt eller inte)
-    # för att träna och uppdatera med en ny weight.
 
 
 #for idx, pic in enumerate(img):
