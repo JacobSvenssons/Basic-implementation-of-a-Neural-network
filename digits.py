@@ -114,10 +114,31 @@ if __name__ == "__main__":
             err = net.calculate_error(shuffled_training_labels[i], act)
             net.calculate_new_weight(err, image, 0.01)
         i += 1
-        print(i)
 
     nets_ans = [0, 0, 0, 0]
     correct_ans = 0
-
-    j = 0
+    total_correct_ans = 0
+    k = 0
     for img in shuffled_test_images:
+        j = 0
+        for net in nets:
+            dot_p = net.dot_product(img)
+            nets_ans[j] = net.activation_function(dot_p)
+            j += 1
+
+        if nets_ans[0] > max(nets_ans[1], nets_ans[2], nets_ans[3]):
+            correct_ans = 4
+        elif nets_ans[1] > max(nets_ans[2], nets_ans[3]):
+            correct_ans = 7
+        elif nets_ans[2] > nets_ans[3]:
+            correct_ans = 8
+        else:
+            correct_ans = 9
+
+        if correct_ans == shuffled_test_labels[k]:
+            total_correct_ans += 1
+
+        print(correct_ans, "VS", shuffled_test_labels[k])
+        k += 1
+
+    print(total_correct_ans/250 * 100)
