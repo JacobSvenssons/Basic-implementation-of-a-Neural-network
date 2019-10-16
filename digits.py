@@ -56,7 +56,6 @@ class Network:
         return np.dot(self.weights, pixels)
 
 
-
 def list_splitter(list_to_split, ratio):
     """
     Split the list of all images into test and training sub sets.
@@ -69,8 +68,6 @@ def list_splitter(list_to_split, ratio):
     return [list_to_split[:middle], list_to_split[middle:]]
 
 
-# A FUNCTION FOR SHUFFLING THE OBJECTS IN TWO LISTS THE SAME WAY.
-# AKA CORRECT LABEL FOR THE IMAGE
 def list_shuffler(image_list_to_shuffle, label_to_shuffle):
     """
     Takes in two lists of equal size and shuffles each list randomly. However both lists
@@ -86,17 +83,28 @@ def list_shuffler(image_list_to_shuffle, label_to_shuffle):
 
 
 class ReadFile:
+    """
+    Class implementation for reading ascii-based file format images.
+    """
+
     def __init__(self, file):
-        self.file = open(file, "r")  # insert  training-images.txt
-        # Read the first two lines cause we do not need them.
+        """
+        Read the input .txt file and removes the first two lines of rubbish comments.
+        :param file: The file to be read.
+        """
+        self.file = open(file, "r")
         self.file.readline()
         self.file.readline()
-        # read third row and fetch the given values
 
     def read_images(self):
+        """
+        Reads the third line from the image.txt file and extracts the values needed to understand
+        the properties of the images that are stored later in the file. Then stores all images into
+        a numpy array.
+        :return: An array of images.
+        """
         images, rows, cols, digits = map(int, self.file.readline().split())
 
-        # Read the file and store every row (image) as an array inside an array
         img = []
         for i in range(images):
             line = list(map(int, self.file.readline().split()))
@@ -107,6 +115,12 @@ class ReadFile:
         return img
 
     def read_label(self):
+        """
+        Reads the third line from the label.txt file and extracts the values needed to understand
+        the properties of the labels that are stored later in the file. Then stores all labels into
+        a numpy array.
+        :return: An array of labels.
+        """
         images, digits = map(int, self.file.readline().split())
 
         # Read the file and store every row (image) as an array inside an array
