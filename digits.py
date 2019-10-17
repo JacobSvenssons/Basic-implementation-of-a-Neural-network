@@ -142,7 +142,7 @@ if __name__ == "__main__":
     np_all_labels = all_label.read_label()
 
     validation_images = ReadFile(sys.argv[3])
-    val_all_images, val_rows, val_cols = all_images.read_images()
+    val_all_images, val_rows, val_cols = validation_images.read_images()
 
 
     # take the two lists and split them in training and test images,
@@ -203,38 +203,26 @@ if __name__ == "__main__":
 
         right = (total_correct_ans / len(shuffled_test_labels)) * 100
         mean_error = error / (len(shuffled_test_images) * len(nets))
-        print(mean_error)
-        print(right)
-
 
     #val_all_images, val_rows, val_cols = all_images.read_images()
 
-    val_mean_err = 1
+    val_ans = [0, 0, 0, 0]
+    val_correct_ans = 0
+    val_total_correct_ans = 0
 
-    while val_mean_err > 0.2:
+    for k, img in enumerate(val_all_images):
 
-        val_mean_err = 0
-        error = 0
+        for j, net in enumerate(nets):
+            dot_p = net.dot_product(img)
+            val_ans[j] = net.activation_function(dot_p)
 
-        val_ans = [0, 0, 0, 0]
-        val_correct_ans = 0
-        val_total_correct_ans = 0
+        if val_ans[0] > max(val_ans[1], val_ans[2], val_ans[3]):
+            val_correct_ans = 4
+        elif val_ans[1] > max(val_ans[2], val_ans[3]):
+            val_correct_ans = 7
+        elif val_ans[2] > val_ans[3]:
+            val_correct_ans = 8
+        else:
+            val_correct_ans = 9
 
-        for k, img in enumerate(val_all_images):
-
-            for j, net in enumerate(nets):
-                dot_p = net.dot_product(img)
-                act = net.activation_function(dot_p)
-                val_ans[j] = act
-                error += np.abs(net.calculate_error(shuffled_test_labels[k], act))
-
-            if val_ans[0] > max(val_ans[1], val_ans[2], val_ans[3]):
-                val_correct_ans = 4
-            elif val_ans[1] > max(val_ans[2], val_ans[3]):
-                val_correct_ans = 7
-            elif val_ans[2] > val_ans[3]:
-                val_correct_ans = 8
-            else:
-                val_correct_ans = 9
-
-            print(val_correct_ans)
+        print(val_correct_ans)
