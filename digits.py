@@ -112,7 +112,7 @@ class ReadFile:
             img.append(line)
         img = np.array(img)
 
-        return img
+        return img, rows, cols
 
     def read_label(self):
         """
@@ -136,10 +136,14 @@ class ReadFile:
 if __name__ == "__main__":
 
     all_images = ReadFile(sys.argv[1])
-    np_all_images = all_images.read_images()
+    np_all_images, img_rows, img_cols = all_images.read_images()
 
     all_label = ReadFile(sys.argv[2])
     np_all_labels = all_label.read_label()
+
+    validation_images = ReadFile(sys.argv[3])
+    val_all_images, val_rows, val_cols = all_images.read_images()
+
 
     # take the two lists and split them in training and test images,
     # and lastly shuffle the lists.
@@ -148,47 +152,89 @@ if __name__ == "__main__":
     shuffled_training_images, shuffled_training_labels = list_shuffler(training_images, training_labels)
     shuffled_test_images, shuffled_test_labels = list_shuffler(test_images, test_labels)
 
-    p_4 = Network(4, len(training_images[0]))
-    p_7 = Network(7, len(training_images[0]))
-    p_8 = Network(8, len(training_images[0]))
-    p_9 = Network(9, len(training_images[0]))
+    #shuffled_images, shuffled_labels = list_shuffler(np_all_images, np_all_labels)
+    #training_images, test_images = list_splitter(shuffled_images, 0.75)
+    #training_labels, test_labels = list_splitter(shuffled_labels, 0.75)
+
+    p_4 = Network(4, img_rows*img_cols)
+    p_7 = Network(7, img_rows*img_cols)
+    p_8 = Network(8, img_rows*img_cols)
+    p_9 = Network(9, img_rows*img_cols)
 
     nets = [p_4, p_7, p_8, p_9]
 
-    i = 0
-    for image in shuffled_training_images:
+    mean_error = 1
 
-        for net in nets:
-            dot_p = net.dot_product(image)
-            act = net.activation_function(dot_p)
-            err = net.calculate_error(shuffled_training_labels[i], act)
-            net.calculate_new_weight(err, image, 0.01)
-        i += 1
+    while mean_error > 0.2:
+        error = 0
+        mean_error = 0
 
-    nets_ans = [0, 0, 0, 0]
-    correct_ans = 0
-    total_correct_ans = 0
-    k = 0
-    for img in shuffled_test_images:
-        j = 0
-        for net in nets:
-            dot_p = net.dot_product(img)
-            nets_ans[j] = net.activation_function(dot_p)
-            j += 1
+        for i, image in enumerate(shuffled_training_images):
 
-        if nets_ans[0] > max(nets_ans[1], nets_ans[2], nets_ans[3]):
-            correct_ans = 4
-        elif nets_ans[1] > max(nets_ans[2], nets_ans[3]):
-            correct_ans = 7
-        elif nets_ans[2] > nets_ans[3]:
-            correct_ans = 8
-        else:
-            correct_ans = 9
+            for net in nets:
+                dot_p = net.dot_product(image)
+                act = net.activation_function(dot_p)
+                err = net.calculate_error(shuffled_training_labels[i], act)
+                net.calculate_new_weight(err, image, 0.045)
 
-        if correct_ans == shuffled_test_labels[k]:
-            total_correct_ans += 1
+        nets_ans = [0, 0, 0, 0]
+        correct_ans = 0
+        total_correct_ans = 0
 
-        print(correct_ans, "VS", shuffled_test_labels[k])
-        k += 1
+        for k, img in enumerate(shuffled_test_images):
 
-    print(total_correct_ans/250 * 100)
+            for j, net in enumerate(nets):
+                dot_p = net.dot_product(img)
+                act = net.activation_function(dot_p)
+                nets_ans[j] = act
+                error += np.abs(net.calculate_error(shuffled_test_labels[k], act))
+
+            if nets_ans[0] > max(nets_ans[1], nets_ans[2], nets_ans[3]):
+                correct_ans = 4
+            elif nets_ans[1] > max(nets_ans[2], nets_ans[3]):
+                correct_ans = 7
+            elif nets_ans[2] > nets_ans[3]:
+                correct_ans = 8
+            else:
+                correct_ans = 9
+
+            if correct_ans == shuffled_test_labels[k]:
+                total_correct_ans += 1
+
+        right = (total_correct_ans / len(shuffled_test_labels)) * 100
+        mean_error = error / (len(shuffled_test_images) * len(nets))
+        print(mean_error)
+        print(right)
+
+
+    #val_all_images, val_rows, val_cols = all_images.read_images()
+
+    val_mean_err = 1
+
+    while val_mean_err > 0.2:
+
+        val_mean_err = 0
+        error = 0
+
+        val_ans = [0, 0, 0, 0]
+        val_correct_ans = 0
+        val_total_correct_ans = 0
+
+        for k, img in enumerate(val_all_images):
+
+            for j, net in enumerate(nets):
+                dot_p = net.dot_product(img)
+                act = net.activation_function(dot_p)
+                val_ans[j] = act
+                error += np.abs(net.calculate_error(shuffled_test_labels[k], act))
+
+            if val_ans[0] > max(val_ans[1], val_ans[2], val_ans[3]):
+                val_correct_ans = 4
+            elif val_ans[1] > max(val_ans[2], val_ans[3]):
+                val_correct_ans = 7
+            elif val_ans[2] > val_ans[3]:
+                val_correct_ans = 8
+            else:
+                val_correct_ans = 9
+
+            print(val_correct_ans)
