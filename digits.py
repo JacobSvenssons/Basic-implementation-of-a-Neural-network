@@ -81,8 +81,17 @@ def list_shuffler(image_list_to_shuffle, label_to_shuffle):
     shuffled_image_list, shuffled_label_list = zip(*temp_zip)
     return shuffled_image_list, shuffled_label_list
 
+
 def compute_highest(num1, num2, num3, num4):
 
+    if num1 > max(num2, num3, num4):
+        return 4
+    elif num2 > max(num3, num4):
+        return 7
+    elif num3 > num4:
+        return 8
+    else:
+        return 9
 
 
 class ReadFile:
@@ -147,16 +156,11 @@ if __name__ == "__main__":
     validation_images = ReadFile(sys.argv[3])
     val_all_images, val_rows, val_cols = validation_images.read_images()
 
-    # take the two lists and split them in training and test images,
-    # and lastly shuffle the lists.
     training_images, test_images = list_splitter(np_all_images, 0.75)
     training_labels, test_labels = list_splitter(np_all_labels, 0.75)
     shuffled_training_images, shuffled_training_labels = list_shuffler(training_images, training_labels)
     shuffled_test_images, shuffled_test_labels = list_shuffler(test_images, test_labels)
 
-    #shuffled_images, shuffled_labels = list_shuffler(np_all_images, np_all_labels)
-    #training_images, test_images = list_splitter(shuffled_images, 0.75)
-    #training_labels, test_labels = list_splitter(shuffled_labels, 0.75)
     p_4 = Network(4, img_rows*img_cols)
     p_7 = Network(7, img_rows*img_cols)
     p_8 = Network(8, img_rows*img_cols)
@@ -186,26 +190,18 @@ if __name__ == "__main__":
                 nets_ans[j] = net.activation_function(net.dot_product(img))
                 error += np.abs(net.calculate_error(shuffled_test_labels[k], nets_ans[j]))
 
-            if nets_ans[0] > max(nets_ans[1], nets_ans[2], nets_ans[3]):
-                correct_ans = 4
-            elif nets_ans[1] > max(nets_ans[2], nets_ans[3]):
-                correct_ans = 7
-            elif nets_ans[2] > nets_ans[3]:
-                correct_ans = 8
-            else:
-                correct_ans = 9
+            correct_ans = compute_highest(nets_ans[0], nets_ans[1], nets_ans[2], nets_ans[3])
 
             if correct_ans == shuffled_test_labels[k]:
                 total_correct_ans += 1
 
         right = (total_correct_ans / len(shuffled_test_labels)) * 100
         mean_error = error / (len(shuffled_test_images) * len(nets))
-
-    #val_all_images, val_rows, val_cols = all_images.read_images()
+        print(right)
+        print(mean_error)
 
     val_ans = [0, 0, 0, 0]
     val_correct_ans = 0
-    val_total_correct_ans = 0
 
     for k, img in enumerate(val_all_images):
 
@@ -213,13 +209,5 @@ if __name__ == "__main__":
             dot_p = net.dot_product(img)
             val_ans[j] = net.activation_function(dot_p)
 
-        if val_ans[0] > max(val_ans[1], val_ans[2], val_ans[3]):
-            val_correct_ans = 4
-        elif val_ans[1] > max(val_ans[2], val_ans[3]):
-            val_correct_ans = 7
-        elif val_ans[2] > val_ans[3]:
-            val_correct_ans = 8
-        else:
-            val_correct_ans = 9
-
+        val_correct_ans = compute_highest(val_ans[0], val_ans[1], val_ans[2], val_ans[3])
         print(val_correct_ans)
