@@ -124,7 +124,7 @@ class ReadFile:
             img.append(line)
         img = np.array(img)
 
-        return img, rows, cols
+        return img, rows, cols, digits
 
     def read_label(self):
         """
@@ -148,25 +148,20 @@ class ReadFile:
 if __name__ == "__main__":
 
     all_images = ReadFile(sys.argv[1])
-    np_all_images, img_rows, img_cols = all_images.read_images()
+    np_all_images, img_rows, img_cols, network_labels = all_images.read_images()
 
     all_label = ReadFile(sys.argv[2])
     np_all_labels = all_label.read_label()
 
     validation_images = ReadFile(sys.argv[3])
-    val_all_images, val_rows, val_cols = validation_images.read_images()
+    val_all_images, val_rows, val_cols, val_network_labels = validation_images.read_images()
 
     training_images, test_images = list_splitter(np_all_images, 0.835)
     training_labels, test_labels = list_splitter(np_all_labels, 0.835)
     shuffled_training_images, shuffled_training_labels = list_shuffler(training_images, training_labels)
     shuffled_test_images, shuffled_test_labels = list_shuffler(test_images, test_labels)
 
-    p_4 = Network(4, img_rows*img_cols)
-    p_7 = Network(7, img_rows*img_cols)
-    p_8 = Network(8, img_rows*img_cols)
-    p_9 = Network(9, img_rows*img_cols)
-
-    nets = [p_4, p_7, p_8, p_9]
+    nets = create_networks(network_labels, img_rows*img_cols)
 
     mean_error = 1
     while mean_error > 0.2:
@@ -197,6 +192,8 @@ if __name__ == "__main__":
 
         right = (total_correct_ans / len(shuffled_test_labels)) * 100
         mean_error = error / (len(shuffled_test_images) * len(nets))
+        #print(right)
+        #print(mean_error)
 
     val_ans = [0, 0, 0, 0]
     val_correct_ans = 0
