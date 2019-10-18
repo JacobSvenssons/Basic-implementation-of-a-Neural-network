@@ -156,8 +156,8 @@ if __name__ == "__main__":
     validation_images = ReadFile(sys.argv[3])
     val_all_images, val_rows, val_cols = validation_images.read_images()
 
-    training_images, test_images = list_splitter(np_all_images, 0.75)
-    training_labels, test_labels = list_splitter(np_all_labels, 0.75)
+    training_images, test_images = list_splitter(np_all_images, 0.83)
+    training_labels, test_labels = list_splitter(np_all_labels, 0.83)
     shuffled_training_images, shuffled_training_labels = list_shuffler(training_images, training_labels)
     shuffled_test_images, shuffled_test_labels = list_shuffler(test_images, test_labels)
 
@@ -210,4 +210,4 @@ if __name__ == "__main__":
             val_ans[j] = net.activation_function(dot_p)
 
         val_correct_ans = compute_highest(val_ans[0], val_ans[1], val_ans[2], val_ans[3])
-        print(val_correct_ans)
+        #print(val_correct_ans)
