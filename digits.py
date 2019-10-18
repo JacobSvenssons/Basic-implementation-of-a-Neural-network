@@ -208,8 +208,8 @@ if __name__ == "__main__":
 
         right = (total_correct_ans / len(shuffled_test_labels)) * 100
         mean_error = error / (len(shuffled_test_images) * len(nets))
-        #print(right)
-        #print(mean_error)
+        print(right)
+        print(mean_error)
 
     val_ans = [0, 0, 0, 0]
     val_correct_ans = 0
@@ -221,4 +221,4 @@ if __name__ == "__main__":
             val_ans[j] = net.activation_function(dot_p)
 
         val_correct_ans = compute_highest(val_ans[0], val_ans[1], val_ans[2], val_ans[3])
-        print(val_correct_ans)
+        #print(val_correct_ans)
