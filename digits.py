@@ -56,6 +56,22 @@ class Network:
         return np.dot(self.weights, pixels)
 
 
+def create_networks(labels, net_size):
+    """
+    Create different networks based on the labels (digits) in the image file.
+    :param labels: The labels for which we will create networks, need to cast to str to iterate and then to int for
+    the Network class.
+    :param net_size: The size of the weight list the network should have.
+    :return: A list of testing images and a list of training images
+    """
+    labels = str(labels)
+    networks = []
+    for num in labels:
+        networks.append(Network(int(num), net_size))
+
+    return networks
+
+
 def list_splitter(list_to_split, ratio):
     """
     Split the list of all images into test and training sub sets.
