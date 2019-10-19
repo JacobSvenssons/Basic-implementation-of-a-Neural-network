@@ -98,16 +98,8 @@ def list_shuffler(image_list_to_shuffle, label_to_shuffle):
     return shuffled_image_list, shuffled_label_list
 
 
-def compute_highest(num1, num2, num3, num4):
-
-    if num1 > max(num2, num3, num4):
-        return 4
-    elif num2 > max(num3, num4):
-        return 7
-    elif num3 > num4:
-        return 8
-    else:
-        return 9
+def compute_highest(number_list, networks):
+    return networks[number_list.index(max(number_list))].label
 
 
 class ReadFile:
@@ -191,7 +183,7 @@ if __name__ == "__main__":
                 err = net.calculate_error(shuffled_training_labels[i], act)
                 net.calculate_new_weight(err, image, 0.045)
 
-        nets_ans = [0, 0, 0, 0]
+        nets_ans = [0 for _ in nets]
         correct_ans = 0
         total_correct_ans = 0
 
@@ -201,7 +193,7 @@ if __name__ == "__main__":
                 nets_ans[j] = net.activation_function(net.dot_product(img))
                 error += np.abs(net.calculate_error(shuffled_test_labels[k], nets_ans[j]))
 
-            correct_ans = compute_highest(nets_ans[0], nets_ans[1], nets_ans[2], nets_ans[3])
+            correct_ans = compute_highest(nets_ans, nets)
 
             if correct_ans == shuffled_test_labels[k]:
                 total_correct_ans += 1
@@ -211,7 +203,7 @@ if __name__ == "__main__":
         print(right)
         print(mean_error)
 
-    val_ans = [0, 0, 0, 0]
+    val_ans = [0 for _ in nets]
     val_correct_ans = 0
 
     for k, img in enumerate(val_all_images):
@@ -220,5 +212,5 @@ if __name__ == "__main__":
             dot_p = net.dot_product(img)
             val_ans[j] = net.activation_function(dot_p)
 
-        val_correct_ans = compute_highest(val_ans[0], val_ans[1], val_ans[2], val_ans[3])
-        #print(val_correct_ans)
+        val_correct_ans = compute_highest(val_ans, nets)
+        print(val_correct_ans)
