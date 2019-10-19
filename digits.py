@@ -99,6 +99,14 @@ def list_shuffler(image_list_to_shuffle, label_to_shuffle):
 
 
 def compute_highest(number_list, networks):
+    """
+    A function that finds the highest value in a list of values,
+    then takes the index where that value lies and retrieve the label
+    that are on the same index in the list of networks.
+    :param number_list: List with values that each network have calculated
+    :param networks: List containing all network
+    :return: The correct label of the network with the highest calculation
+    """
     return networks[number_list.index(max(number_list))].label
 
 
